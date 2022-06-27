@@ -2,44 +2,40 @@ class Game {
     constructor () {
     this.hero = null;
     this.world = null;
-    this.enemies = [];
+
     //level
     }
 
     startGame() {
+        document.getElementById("world").hidden = false;
+        document.getElementById("battle").hidden = true;
         this.hero = new Hero();
-        this.world = new World(this.hero, this.enemies);
+        this.world = new World(this.hero);
         this.world.startWorld();
-        this.createEnemies();
+
     }
-
-
-    createEnemies() { 
-        setInterval( () => {
-            if(this.enemies.length < 10){
-                this.enemies.push(new Enemy());
-            }
-
-        }, 5000);
-    }
-
 }
 
 class World  {
-    constructor(hero, enemies) {
+    constructor(hero) {
         this.hero = hero;
-        this.enemies = enemies;
+        this.enemies = [];
         this.battle = null;
+        this.inBattle = false;
     }
 
     startWorld() {
         this.addEventListeners();
+        this.createEnemies();
         this.moveEnemy();
         this.detectContact();
     }
 
     addEventListeners() {
         document.addEventListener('keydown', event => {
+            if(this.inBattle){
+                return
+            }
             switch(true) {
                 case event.key === "ArrowUp" &&  this.hero.positionY + this.hero.height < 100:
                     this.hero.moveUp();
@@ -57,8 +53,24 @@ class World  {
         })
     }
 
+    createEnemies() { 
+        setInterval( () => {
+            if(this.inBattle){
+                return
+            }
+            if(this.enemies.length < 10){
+                this.enemies.push(new Enemy());
+            }
+
+        }, 5000);
+    }
+
+
     moveEnemy() {
         setInterval( () => {
+            if(this.inBattle){
+                return
+            }
             this.enemies.forEach(enemy => {
                 switch(true) {
                     case enemy.positionX < this.hero.positionX && enemy.positionY < this.hero.positionY:
@@ -97,27 +109,50 @@ class World  {
 
     detectContact() {
         setInterval(() => {
+            if(this.inBattle){
+                return
+            }
             this.enemies.forEach( (enemy => {
                 if (this.hero.positionX < enemy.positionX + enemy.width &&
                     this.hero.positionX + this.hero.width > enemy.positionX &&
                     this.hero.positionY < enemy.positionY + enemy.height &&
                     this.hero.height + this.hero.positionY > enemy.positionY) {
-                    console.log("battle!");
-                    this.battle = new Battle;
+                    this.startBattle(this.hero, enemy);
+                    this.enemies.splice(enemy);
+                    enemy.domElement.remove();
                 }
             }))
         }, 50) 
+    }
+
+    startBattle(hero, enemy) {
+        this.battle = new Battle(hero, enemy);
+        this.inBattle = true;
+        document.getElementById("world").hidden = true;
+        document.getElementById("battle").hidden = false;
+        hero.createDomElement();
+        enemy.createDomElement();
+
     }
 
 }
 
 
 class Battle {
-    constructor() {
+    constructor(hero, enemy) {
+        this.hero = hero;
+        this.hero.scene = "battle"
+        this.hero.height = 25;
+        this.hero.width = 8;
+        this.hero.positionX = 90 - this.hero.width;
+        this.hero.positionY = 0;
 
-    }
-
-    startBattle(){ 
+        this.enemy = enemy;
+        this.enemy.scene = "battle"
+        this.enemy.height = 30;
+        this.enemy.width = 10;
+        this.enemy.positionX = 10;
+        this.enemy.positionY = 0;
 
     }
 
@@ -129,8 +164,9 @@ class Battle {
 }
 
 class Character {
-    constructor (className, height, width, positionX, positionY, health, attack, defence) {
+    constructor (className, scene, height, width, positionX, positionY, health, attack, defence) {
         this.className = className;
+        this.scene = scene;
 
         this.height = height;
         this.width = width;
@@ -145,7 +181,7 @@ class Character {
         this.domElement = this.createDomElement();
     }
 
-    createDomElement(className) {
+    createDomElement() {
         const newElement = document.createElement('div');
 
         //set it and css
@@ -155,9 +191,8 @@ class Character {
         newElement.style.left = this.positionX + "vw";
         newElement.style.bottom = this.positionY + "vh";
 
-
         // append to the dom
-        document.getElementById("world").appendChild(newElement);
+        document.getElementById(this.scene).appendChild(newElement);
 
         return newElement;
     }
@@ -183,7 +218,10 @@ class Character {
 
 class Hero extends Character {
     constructor() {
-        const className = "hero"
+        const className = "hero";
+        const scene = "world";
+
+
         const height = 15;
         const width = 3;
         const positionX = 0;
@@ -194,7 +232,7 @@ class Hero extends Character {
         const attack = 20;
         const defence = 10;
 
-        super(className, height, width, positionX, positionY, health, attack, defence);
+        super(className, scene, height, width, positionX, positionY, health, attack, defence);
     }
         
 
@@ -205,7 +243,8 @@ class Hero extends Character {
 
 class Enemy extends Character {
     constructor(/*level*/) {
-        const className = "enemy"
+        const className = "enemy";
+        const scene = "world";
         
         const height = 10;
         const width = 2;
@@ -216,7 +255,7 @@ class Enemy extends Character {
         const attack = 10;
         const defence = 10;
 
-        super(className, height, width, positionX, positionY, health, attack, defence);
+        super(className, scene, height, width, positionX, positionY, health, attack, defence);
     
         this.level = 1;
     }
