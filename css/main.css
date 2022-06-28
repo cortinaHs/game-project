@@ -11,11 +11,42 @@ body {
     width: 100vw;
 }
 
+#popup {
+    position: absolute;
+    background-color: beige;
+    left: 30vw;
+    bottom: 45vh;
+    width: 40vw;
+    height: 30vh;
+    border: 3px solid transparent;
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 600;
+}
+
 #battle {
     background-color: black;
     position: relative;
     height: 100vh;
     width: 100vw;
+}
+
+#attack {
+    position: absolute;
+    left: 95vw;
+    top: 25vh;
+    width: 60px;
+    text-align: center;
+}
+
+#block {
+    position: absolute;
+    left: 95vw;
+    top: 30vh;
+    width: 60px;
+    text-align: center;
 }
 
 

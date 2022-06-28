@@ -6,13 +6,81 @@ class Game {
     //level
     }
 
-    startGame() {
+
+    welcomeScreen() {
         document.getElementById("world").hidden = false;
         document.getElementById("battle").hidden = true;
+        
+
+        const message = document.createElement("p");
+        message.innerHTML = ".......";
+
+        document.getElementById("popup").appendChild(message);
+
+
+        const play = document.createElement("button");
+        play.innerText = "Play";
+        document.getElementById("popup").appendChild(play);
+
+        document.getElementById("popup").hidden = false;
+
+        play.addEventListener("click", () => {
+            document.getElementById("popup").hidden = true;
+            message.remove();
+            play.remove();
+            this.startGame();
+        });
+
+
+
+    }
+
+    startGame() {
+        document.getElementById("popup").hidden = true;
+
         this.hero = new Hero();
         this.world = new World(this.hero);
         this.world.startWorld();
 
+    }
+
+    gameEnd(status) {
+        document.getElementById("world").style.filter = "blur (8px)"
+        document.getElementById("world").hidden = false;
+        document.getElementById("battle").hidden = true;
+
+        //reset
+        clearInterval(this.world.intervalID)
+        this.hero.domElement.remove();
+        this.world.enemies.forEach(enemy => enemy.domElement.remove());
+        this.hero = null;
+        this.world = null;
+
+        //popup
+        const message = document.createElement("p");
+
+        if(status === "gameOver") {
+            message.innerHTML = "Game Over";
+        } else if(status === "winGame") {
+            message.innerHTML = "Congratulations! You reached the destination.";
+        }
+
+        document.getElementById("popup").appendChild(message);
+
+
+        const playAgain = document.createElement("button");
+        playAgain.innerText = "Play Again";
+        document.getElementById("popup").appendChild(playAgain);
+
+        document.getElementById("popup").hidden = false;
+
+        playAgain.addEventListener("click", () => {
+            document.getElementById("popup").hidden = true;
+            message.remove();
+            playAgain.remove();
+            this.startGame();
+        });
+        
     }
 }
 
@@ -22,17 +90,19 @@ class World  {
         this.enemies = [];
         this.battle = null;
         this.inBattle = false;
+        this.worldPositionX = null;
+        this.worldPositionY = null;
+        this.intervalID = null;
+        this.time = 0;
     }
 
     startWorld() {
         this.addEventListeners();
-        this.createEnemies();
-        this.moveEnemy();
-        this.detectContact();
+        this.enemyActions();
     }
 
     addEventListeners() {
-        document.addEventListener('keydown', event => {
+        document.addEventListener("keydown", event => {
             if(this.inBattle){
                 return
             }
@@ -53,24 +123,41 @@ class World  {
         })
     }
 
-    createEnemies() { 
-        setInterval( () => {
+    enemyActions() {
+        this.intervalID = setInterval( () => {
             if(this.inBattle){
                 return
             }
-            if(this.enemies.length < 10){
-                this.enemies.push(new Enemy());
+
+            if(this.time % 420 === 0) {
+                this.createEnemies();
             }
 
-        }, 5000);
+            if(this.time % 120 === 0) {
+                this.moveEnemy();
+            }
+
+            this.detectContact();
+
+            this.reachDestination();
+
+            this.time++;
+
+        }, 10);
+    }
+
+        
+
+    
+
+    createEnemies() {  
+            if(this.enemies.length < 5){
+                this.enemies.push(new Enemy());
+            }
     }
 
 
     moveEnemy() {
-        setInterval( () => {
-            if(this.inBattle){
-                return
-            }
             this.enemies.forEach(enemy => {
                 switch(true) {
                     case enemy.positionX < this.hero.positionX && enemy.positionY < this.hero.positionY:
@@ -101,39 +188,66 @@ class World  {
                     case enemy.positionY > this.hero.positionY:
                         enemy.moveDown();
                         break;
-
-            }
-            })
-        }, 200);
+                }
+            });
     }
 
     detectContact() {
-        setInterval(() => {
-            if(this.inBattle){
-                return
-            }
             this.enemies.forEach( (enemy => {
                 if (this.hero.positionX < enemy.positionX + enemy.width &&
                     this.hero.positionX + this.hero.width > enemy.positionX &&
                     this.hero.positionY < enemy.positionY + enemy.height &&
                     this.hero.height + this.hero.positionY > enemy.positionY) {
-                    this.startBattle(this.hero, enemy);
-                    this.enemies.splice(enemy);
-                    enemy.domElement.remove();
+
+                    this.initiateBattle(this.hero, enemy);
                 }
-            }))
-        }, 50) 
+            }));
     }
 
-    startBattle(hero, enemy) {
+        reachDestination() {
+            if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0){
+                //trigger "Bossfight"?
+                //min XP = 100
+                game.gameEnd("winGame");
+        }
+    }
+
+    initiateBattle(hero, enemy) {
+        this.worldPositionX = this.hero.positionX;
+        this.worldPositionY = this.hero.positionY;
         this.battle = new Battle(hero, enemy);
         this.inBattle = true;
         document.getElementById("world").hidden = true;
         document.getElementById("battle").hidden = false;
         hero.createDomElement();
         enemy.createDomElement();
-
+        this.battle.startBattle(hero, enemy);
     }
+
+    winBattle(enemy){
+        const message = document.createElement("p");
+        message.innerHTML = "Enemy down! You win!"
+
+        document.getElementById("popup").appendChild(message)
+        document.getElementById("popup").hidden = false;
+        // document.getElementById("world").style.filter = "blur (8px)"
+        document.getElementById("world").hidden = false;
+        document.getElementById("battle").hidden = true;
+
+        this.enemies.splice(this.enemies.indexOf(enemy), 1);
+        enemy.domElement.remove();
+
+
+        setTimeout(() => {
+            message.remove();
+            document.getElementById("popup").hidden = true;
+            this.hero.positionX = this.worldPositionX;
+            this.hero.positionY = this.worldPositionY;
+            this.inBattle = false;
+        }, 3000)
+    }
+
+
 
 }
 
@@ -154,11 +268,69 @@ class Battle {
         this.enemy.positionX = 10;
         this.enemy.positionY = 0;
 
+        // this.turn = "hero";
+
+    }
+
+    startBattle(hero, enemy) {
+        this.addEventListeners();
     }
 
     addEventListeners() {
-        // document.addEventListener('click', this.hero.attack())
+        document.getElementById("attack").addEventListener('click', () => {
+                this.fight(this.hero, this.enemy);
+        });
+        // document.getElementById("block").addEventListener('click', () => {
+        //     if(this.turn === "hero") {
+        //         this.defend(this.hero, this.enemy);
+        //         this.turn = "enemy";
+        //     }
+        // });
     }
+
+    fight(hero, enemy) {
+ 
+        this.attack(hero, enemy);
+        this.attack(enemy, hero);
+
+        console.log(hero.health)
+
+
+        // if(this.turn === "hero") {
+        // this.attack(hero, enemy);
+        // this.turn = "enemy";
+        // } else if (this.turn === "enemy") {
+        //     this.attack(enemy, hero);
+        //     this.turn = "hero";
+        // }
+
+        if (hero.health <= 0) {
+            return game.gameEnd("gameOver");
+        } else if (enemy.health <= 0){
+            return game.world.winBattle(enemy);
+        }
+
+    }
+
+    
+    attack(attacker, opponent) {
+
+        //move animation
+
+        const chance = Number(Math.random().toFixed(2))
+
+        if(chance > 0.85) {
+            opponent.health -= attacker.attack * 2;
+        } else if(chance > 0.60) {
+            opponent.health -= (Math.floor(attacker.attack * chance)) - opponent.defence;
+        } else {
+            opponent.health -= (Math.floor(attacker.attack * 0.6)) - opponent.defence;
+        }
+    }
+
+    // defend() {
+
+    // }
 
 
 }
@@ -190,6 +362,7 @@ class Character {
         newElement.style.width = this.width + "vw";
         newElement.style.left = this.positionX + "vw";
         newElement.style.bottom = this.positionY + "vh";
+
 
         // append to the dom
         document.getElementById(this.scene).appendChild(newElement);
@@ -228,8 +401,8 @@ class Hero extends Character {
         const positionY = 100 - height;
 
 
-        const health = 100;
-        const attack = 20;
+        const health = 200;
+        const attack = 40;
         const defence = 10;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
@@ -242,7 +415,7 @@ class Hero extends Character {
 
 
 class Enemy extends Character {
-    constructor(/*level*/) {
+    constructor(/*positionX, positionY, level*/) {
         const className = "enemy";
         const scene = "world";
         
@@ -251,8 +424,9 @@ class Enemy extends Character {
         const positionX = Math.floor(Math.random() * (100 - width) + 1);
         const positionY = Math.floor(Math.random() * (100 - height) + 1);
 
-        const health = 50;
-        const attack = 10;
+
+        const health = 150;
+        const attack = 20;
         const defence = 10;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
@@ -268,4 +442,4 @@ class Enemy extends Character {
 
 
 const game = new Game();
-game.startGame();
+game.welcomeScreen();
