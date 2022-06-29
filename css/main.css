@@ -1,36 +1,74 @@
 body {
     padding: 0;
     margin: 0;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 600;
+    
 }
 
+#xp {
+    position: fixed;
+    left: 80vw;
+    top: 4vh;
+    z-index: 1;
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.hero .health {
+    position: fixed;
+    left: 80vw;
+    top: 2vh;
+    z-index: 1;
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.enemy .health {
+    position: fixed;
+    left: 5vw;
+    top: 2vh;
+    z-index: 1;
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#xp {
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 
 #world {
-    background-color: grey;
     position: relative;
-    height: 100vh;
     width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url("../img/background-world.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 #popup {
     position: absolute;
-    background-color: beige;
-    left: 30vw;
-    bottom: 45vh;
-    width: 40vw;
-    height: 30vh;
+    background-color: rgb(231, 218, 183);
+    width: 20rem;
+    height:10rem;
+    left: 35%;
+    top: 35%;
     border: 3px solid transparent;
     border-radius: 0.2em;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 600;
 }
 
 #battle {
-    background-color: black;
     position: relative;
-    height: 100vh;
     width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url("../img/background-battle.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 #attack {
@@ -51,11 +89,17 @@ body {
 
 
 .hero {
-    background-color: navy;
+    background-image: url(../img/hero-world.png);
     position: absolute;
+    background-repeat: no-repeat;
 }
 
 .enemy {
-    background-color: crimson;
+    /* background-image: url(../img/enemy-world.png); */
+    background-color: blueviolet;
     position: absolute;
+    /* background-repeat: no-repeat;
+    background-size: 5%; */
+    /* width: 2vw; */
+
 }

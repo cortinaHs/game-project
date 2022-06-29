@@ -8,9 +8,10 @@ class Game {
 
 
     welcomeScreen() {
+
         document.getElementById("world").hidden = false;
         document.getElementById("battle").hidden = true;
-        
+
 
         const message = document.createElement("p");
         message.innerHTML = ".......";
@@ -151,64 +152,63 @@ class World  {
     
 
     createEnemies() {  
-            if(this.enemies.length < 5){
-                this.enemies.push(new Enemy());
-            }
+        if(this.enemies.length < 5){
+            this.enemies.push(new Enemy());
+        }
     }
 
 
     moveEnemy() {
-            this.enemies.forEach(enemy => {
-                switch(true) {
-                    case enemy.positionX < this.hero.positionX && enemy.positionY < this.hero.positionY:
-                        enemy.moveRight();
-                        enemy.moveUp();
-                        break;
-                    case enemy.positionX > this.hero.positionX && enemy.positionY < this.hero.positionY:
-                        enemy.moveLeft();
-                        enemy.moveUp();
-                        break;
-                    case enemy.positionX < this.hero.positionX && enemy.positionY > this.hero.positionY:
-                        enemy.moveRight();
-                        enemy.moveDown();
-                        break;
-                    case enemy.positionX > this.hero.positionX && enemy.positionY > this.hero.positionY:
-                        enemy.moveLeft();
-                        enemy.moveDown();
-                        break;
-                    case enemy.positionX < this.hero.positionX:
-                        enemy.moveRight();
-                        break;
-                    case enemy.positionX > this.hero.positionX:
-                        enemy.moveLeft();
-                        break;
-                    case enemy.positionY < this.hero.positionY:
-                        enemy.moveUp();
-                        break;
-                    case enemy.positionY > this.hero.positionY:
-                        enemy.moveDown();
-                        break;
-                }
-            });
+        this.enemies.forEach(enemy => {
+            switch(true) {
+                case enemy.positionX < this.hero.positionX && enemy.positionY < this.hero.positionY:
+                    enemy.moveRight();
+                    enemy.moveUp();
+                    break;
+                case enemy.positionX > this.hero.positionX && enemy.positionY < this.hero.positionY:
+                    enemy.moveLeft();
+                    enemy.moveUp();
+                    break;
+                case enemy.positionX < this.hero.positionX && enemy.positionY > this.hero.positionY:
+                    enemy.moveRight();
+                    enemy.moveDown();
+                    break;
+                case enemy.positionX > this.hero.positionX && enemy.positionY > this.hero.positionY:
+                    enemy.moveLeft();
+                    enemy.moveDown();
+                    break;
+                case enemy.positionX < this.hero.positionX:
+                    enemy.moveRight();
+                    break;
+                case enemy.positionX > this.hero.positionX:
+                    enemy.moveLeft();
+                    break;
+                case enemy.positionY < this.hero.positionY:
+                    enemy.moveUp();
+                    break;
+                case enemy.positionY > this.hero.positionY:
+                    enemy.moveDown();
+                    break;
+            }
+        });
     }
 
     detectContact() {
-            this.enemies.forEach( (enemy => {
-                if (this.hero.positionX < enemy.positionX + enemy.width &&
-                    this.hero.positionX + this.hero.width > enemy.positionX &&
-                    this.hero.positionY < enemy.positionY + enemy.height &&
-                    this.hero.height + this.hero.positionY > enemy.positionY) {
+        this.enemies.forEach( (enemy => {
+            if (this.hero.positionX < enemy.positionX + enemy.width &&
+                this.hero.positionX + this.hero.width > enemy.positionX &&
+                this.hero.positionY < enemy.positionY + enemy.height &&
+                this.hero.height + this.hero.positionY > enemy.positionY) {
 
-                    this.initiateBattle(this.hero, enemy);
-                }
-            }));
+                this.initiateBattle(this.hero, enemy);
+            }
+        }));
     }
 
-        reachDestination() {
-            if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0){
-                //trigger "Bossfight"?
-                //min XP = 100
-                game.gameEnd("winGame");
+    reachDestination() {
+        if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0 && this.hero.xp >= 5){
+            //trigger "Bossfight"?
+            game.gameEnd("winGame");
         }
     }
 
@@ -230,12 +230,12 @@ class World  {
 
         document.getElementById("popup").appendChild(message)
         document.getElementById("popup").hidden = false;
-        // document.getElementById("world").style.filter = "blur (8px)"
         document.getElementById("world").hidden = false;
         document.getElementById("battle").hidden = true;
 
-        this.enemies.splice(this.enemies.indexOf(enemy), 1);
         enemy.domElement.remove();
+        this.enemies.splice(this.enemies.indexOf(enemy), 1);
+        
 
 
         setTimeout(() => {
@@ -258,7 +258,7 @@ class Battle {
         this.hero.scene = "battle"
         this.hero.height = 25;
         this.hero.width = 8;
-        this.hero.positionX = 90 - this.hero.width;
+        this.hero.positionX = 80 - this.hero.width;
         this.hero.positionY = 0;
 
         this.enemy = enemy;
@@ -274,6 +274,8 @@ class Battle {
 
     startBattle(hero, enemy) {
         this.addEventListeners();
+        // document.querySelector('.hero').style.backgroundImage = "url(../img/hero-battler.png)";
+    
     }
 
     addEventListeners() {
@@ -293,9 +295,6 @@ class Battle {
         this.attack(hero, enemy);
         this.attack(enemy, hero);
 
-        console.log(hero.health)
-
-
         // if(this.turn === "hero") {
         // this.attack(hero, enemy);
         // this.turn = "enemy";
@@ -307,6 +306,8 @@ class Battle {
         if (hero.health <= 0) {
             return game.gameEnd("gameOver");
         } else if (enemy.health <= 0){
+            hero.xp++;
+            document.getElementById("xp-value").value = hero.xp;
             return game.world.winBattle(enemy);
         }
 
@@ -321,10 +322,13 @@ class Battle {
 
         if(chance > 0.85) {
             opponent.health -= attacker.attack * 2;
+            console.log(opponent)
         } else if(chance > 0.60) {
             opponent.health -= (Math.floor(attacker.attack * chance)) - opponent.defence;
+            console.log(opponent)
         } else {
             opponent.health -= (Math.floor(attacker.attack * 0.6)) - opponent.defence;
+            console.log(opponent)
         }
     }
 
@@ -363,6 +367,8 @@ class Character {
         newElement.style.left = this.positionX + "vw";
         newElement.style.bottom = this.positionY + "vh";
 
+        newElement.innerHTML = `<label class="hp">${this.className}
+        <progress id="hp-value" value="${this.health}" max="100"></progress></label>`
 
         // append to the dom
         document.getElementById(this.scene).appendChild(newElement);
@@ -394,18 +400,24 @@ class Hero extends Character {
         const className = "hero";
         const scene = "world";
 
-
-        const height = 15;
+        const height = 5;
         const width = 3;
-        const positionX = 0;
-        const positionY = 100 - height;
+        const positionX = 2;
+        const positionY = 100 - 3 - height;
 
 
-        const health = 200;
-        const attack = 40;
+        const health = 100;
+        const attack = 30;
         const defence = 10;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
+
+        this.xp = 0;
+
+        this.domElement.innerHTML += `<label id="xp">xp
+        <progress id="xp-value" value="${this.xp}" max="5"></progress></label>`
+
+        // document.querySelector('.hero').style.backgroundImage = "url(../img/hero-world.png)";
     }
         
 
@@ -425,9 +437,9 @@ class Enemy extends Character {
         const positionY = Math.floor(Math.random() * (100 - height) + 1);
 
 
-        const health = 150;
-        const attack = 20;
-        const defence = 10;
+        const health = 100;
+        const attack = 10;
+        const defence = 20;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
     
