@@ -357,8 +357,6 @@ class Character {
 
         this.domElement = this.createDomElement();
         this.healthBar = this.createHealthBar();
-
-        
     }
 
     createDomElement() {
@@ -429,7 +427,7 @@ class Hero extends Character {
 
 
         const health = 100;
-        const attack = 30;
+        const attack = 50;
         const defence = 10;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
@@ -460,7 +458,7 @@ class Enemy extends Character {
 
 
         const health = 100;
-        const attack = 10;
+        const attack = 20;
         const defence = 20;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
