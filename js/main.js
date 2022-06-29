@@ -322,14 +322,15 @@ class Battle {
 
         if(chance > 0.85) {
             opponent.health -= attacker.attack * 2;
-            console.log(opponent)
         } else if(chance > 0.60) {
-            opponent.health -= (Math.floor(attacker.attack * chance)) - opponent.defence;
-            console.log(opponent)
+            opponent.health -= (Math.floor(attacker.attack * chance));
         } else {
-            opponent.health -= (Math.floor(attacker.attack * 0.6)) - opponent.defence;
-            console.log(opponent)
+            opponent.health -= (Math.floor(attacker.attack * 0.6));
         }
+
+        console.log(opponent)
+        console.log(opponent.healthBar)
+        opponent.healthBar.value = opponent.health;
     }
 
     // defend() {
@@ -355,6 +356,9 @@ class Character {
         this.defence = defence;
 
         this.domElement = this.createDomElement();
+        this.healthBar = this.createHealthBar();
+
+        
     }
 
     createDomElement() {
@@ -367,13 +371,31 @@ class Character {
         newElement.style.left = this.positionX + "vw";
         newElement.style.bottom = this.positionY + "vh";
 
-        newElement.innerHTML = `<label class="hp">${this.className}
-        <progress id="hp-value" value="${this.health}" max="100"></progress></label>`
+        
 
         // append to the dom
         document.getElementById(this.scene).appendChild(newElement);
 
         return newElement;
+    }
+
+    createHealthBar() {
+
+        const healthBar = document.createElement("progress");
+        healthBar.className = "hp-value";
+        healthBar.value = this.health;
+        healthBar.max = 100; 
+
+        const label = document.createElement("label");
+        label.className = "hp";
+        label.textContent = this.className;
+
+
+        label.appendChild(healthBar);
+
+        this.domElement.appendChild(label);
+
+        return healthBar;
     }
 
     moveUp() {

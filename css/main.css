@@ -15,7 +15,7 @@ body {
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.hero .health {
+.hero .hp {
     position: fixed;
     left: 80vw;
     top: 2vh;
@@ -24,7 +24,7 @@ body {
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.enemy .health {
+.enemy .hp {
     position: fixed;
     left: 5vw;
     top: 2vh;
@@ -33,10 +33,6 @@ body {
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#xp {
-    border-radius: 0.2em;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
 
 #world {
     position: relative;
@@ -70,6 +66,15 @@ body {
     background-repeat: no-repeat;
     background-size: 100%;
 }
+
+#magic {
+    position: absolute;
+    left: 95vw;
+    top: 20vh;
+    width: 60px;
+    text-align: center;
+}
+
 
 #attack {
     position: absolute;
