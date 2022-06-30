@@ -14,7 +14,7 @@ class Game {
 
 
         const message = document.createElement("p");
-        message.innerHTML = ".......";
+        message.innerHTML = "<br>You are on an adventure to find a special flower. <br><br>Find the flower and win the game.<br><br>This requires a certain level of experience. Fill the bar before you reach the flower by winning fights against monsters along the way.<br><br><br>";
 
         document.getElementById("popup").appendChild(message);
 
@@ -206,7 +206,7 @@ class World  {
     }
 
     reachDestination() {
-        if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0 && this.hero.xp >= 5){
+        if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0 && this.hero.xp >= 1){
             //trigger "Bossfight"?
             game.gameEnd("winGame");
         }
@@ -219,8 +219,10 @@ class World  {
         this.inBattle = true;
         document.getElementById("world").hidden = true;
         document.getElementById("battle").hidden = false;
-        hero.createDomElement();
-        enemy.createDomElement();
+        const heroDom = hero.createDomElement();
+        hero.createHealthBar(heroDom);
+        const enemyDom = enemy.createDomElement();
+        enemy.createHealthBar(enemyDom);
         this.battle.startBattle(hero, enemy);
     }
 
@@ -236,7 +238,7 @@ class World  {
         enemy.domElement.remove();
         this.enemies.splice(this.enemies.indexOf(enemy), 1);
         
-
+        this.hero.healthBar = this.hero.createHealthBar(this.hero.domElement);
 
         setTimeout(() => {
             message.remove();
@@ -356,7 +358,7 @@ class Character {
         this.defence = defence;
 
         this.domElement = this.createDomElement();
-        this.healthBar = this.createHealthBar();
+        this.healthBar = this.createHealthBar(this.domElement);
     }
 
     createDomElement() {
@@ -377,7 +379,7 @@ class Character {
         return newElement;
     }
 
-    createHealthBar() {
+    createHealthBar(domElement) {
 
         const healthBar = document.createElement("progress");
         healthBar.className = "hp-value";
@@ -391,7 +393,9 @@ class Character {
 
         label.appendChild(healthBar);
 
-        this.domElement.appendChild(label);
+        domElement.appendChild(label);
+
+        this.healthBar = healthBar;
 
         return healthBar;
     }
@@ -420,8 +424,8 @@ class Hero extends Character {
         const className = "hero";
         const scene = "world";
 
-        const height = 5;
-        const width = 3;
+        const height = 6;
+        const width = 4;
         const positionX = 2;
         const positionY = 100 - 3 - height;
 
@@ -435,7 +439,7 @@ class Hero extends Character {
         this.xp = 0;
 
         this.domElement.innerHTML += `<label id="xp">xp
-        <progress id="xp-value" value="${this.xp}" max="5"></progress></label>`
+        <progress id="xp-value" value="${this.xp}" max="1"></progress></label>`
 
         // document.querySelector('.hero').style.backgroundImage = "url(../img/hero-world.png)";
     }

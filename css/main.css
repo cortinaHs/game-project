@@ -41,14 +41,14 @@ body {
     overflow: hidden;
     background-image: url("../img/background-world.png");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
 }
 
 #popup {
     position: absolute;
     background-color: rgb(231, 218, 183);
-    width: 20rem;
-    height:10rem;
+    width: 30rem;
+    height:20rem;
     left: 35%;
     top: 35%;
     border: 3px solid transparent;
@@ -64,7 +64,7 @@ body {
     overflow: hidden;
     background-image: url("../img/background-battle.png");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
 }
 
 #magic {
@@ -85,6 +85,7 @@ body {
 }
 
 #block {
+    background-image: url();
     position: absolute;
     left: 95vw;
     top: 30vh;
@@ -97,6 +98,7 @@ body {
     background-image: url(../img/hero-world.png);
     position: absolute;
     background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .enemy {
