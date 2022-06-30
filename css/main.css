@@ -8,7 +8,7 @@ body {
 
 #xp {
     position: fixed;
-    left: 80vw;
+    left: 5vw;
     top: 4vh;
     z-index: 1;
     border-radius: 0.2em;
@@ -17,7 +17,7 @@ body {
 
 .hero .hp {
     position: fixed;
-    left: 80vw;
+    left: 5vw;
     top: 2vh;
     z-index: 1;
     border-radius: 0.2em;
@@ -26,7 +26,7 @@ body {
 
 .enemy .hp {
     position: fixed;
-    left: 5vw;
+    left: 80vw;
     top: 2vh;
     z-index: 1;
     border-radius: 0.2em;

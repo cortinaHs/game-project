@@ -33,7 +33,7 @@ class Game {
 
         play.addEventListener("click", () => {
             popupEl.hidden = true;
-            message.remove();
+            popupEl.innerHTML = "";
             play.remove();
             this.startGame();
         });
@@ -83,7 +83,7 @@ class Game {
 
         playAgain.addEventListener("click", () => {
             popupEl.hidden = true;
-            message.remove();
+            popupEl.innerHTML = "";
             playAgain.remove();
             this.startGame();
         });
@@ -247,7 +247,7 @@ class World  {
         this.hero.healthBar = this.hero.createHealthBar(this.hero.domElement);
 
         setTimeout(() => {
-            message.remove();
+            popupEl.innerHTML = "";
             popupEl.hidden = true;
             this.hero.positionX = this.worldPositionX;
             this.hero.positionY = this.worldPositionY;
@@ -266,14 +266,14 @@ class Battle {
         this.hero.scene = "battle"
         this.hero.height = 40;
         this.hero.width = 30;
-        this.hero.positionX = 80 - this.hero.width;
+        this.hero.positionX = 10;
         this.hero.positionY = 10;
 
         this.enemy = enemy;
         this.enemy.scene = "battle"
         this.enemy.height = 30;
         this.enemy.width = 10;
-        this.enemy.positionX = 10;
+        this.enemy.positionX = 90 - this.enemy.width;
         this.enemy.positionY = 0;
 
         // this.turn = "hero";
@@ -299,9 +299,14 @@ class Battle {
     }
 
     fight(hero, enemy) {
- 
-        this.attack(hero, enemy);
+        
+        if (hero.health > 0){
+            this.attack(hero, enemy);
+        }
+        
+        if (enemy.health > 0){
         this.attack(enemy, hero);
+        }
 
         // if(this.turn === "hero") {
         // this.attack(hero, enemy);
@@ -468,7 +473,7 @@ class Enemy extends Character {
 
 
         const health = 100;
-        const attack = 20;
+        const attack = 5;
         const defence = 20;
 
         super(className, scene, height, width, positionX, positionY, health, attack, defence);
