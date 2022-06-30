@@ -42,6 +42,12 @@ body {
     top: 2vh;
 }
 
+#hit {
+    color: crimson;
+    z-index: 1;
+    font-size: large;
+}
+
 
 #world {
     position: relative;
