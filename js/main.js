@@ -1,3 +1,9 @@
+
+const worldEl = document.getElementById("world");
+const battleEl = document.getElementById("battle");
+const popupEl = document.getElementById("popup");
+
+
 class Game { 
     constructor () {
     this.hero = null;
@@ -9,24 +15,24 @@ class Game {
 
     welcomeScreen() {
 
-        document.getElementById("world").hidden = false;
-        document.getElementById("battle").hidden = true;
+        worldEl.hidden = false;
+        battleEl.hidden = true;
 
 
         const message = document.createElement("p");
         message.innerHTML = "<br>You are on an adventure to find a special flower. <br><br>Find the flower and win the game.<br><br>This requires a certain level of experience. Fill the bar before you reach the flower by winning fights against monsters along the way.<br><br><br>";
 
-        document.getElementById("popup").appendChild(message);
+        popupEl.appendChild(message);
 
 
         const play = document.createElement("button");
         play.innerText = "Play";
-        document.getElementById("popup").appendChild(play);
+        popupEl.appendChild(play);
 
-        document.getElementById("popup").hidden = false;
+        popupEl.hidden = false;
 
         play.addEventListener("click", () => {
-            document.getElementById("popup").hidden = true;
+            popupEl.hidden = true;
             message.remove();
             play.remove();
             this.startGame();
@@ -37,7 +43,7 @@ class Game {
     }
 
     startGame() {
-        document.getElementById("popup").hidden = true;
+        popupEl.hidden = true;
 
         this.hero = new Hero();
         this.world = new World(this.hero);
@@ -46,9 +52,9 @@ class Game {
     }
 
     gameEnd(status) {
-        document.getElementById("world").style.filter = "blur (8px)"
-        document.getElementById("world").hidden = false;
-        document.getElementById("battle").hidden = true;
+        worldEl.style.filter = "blur (8px)"
+        worldEl.hidden = false;
+        battleEl.hidden = true;
 
         //reset
         clearInterval(this.world.intervalID)
@@ -66,17 +72,17 @@ class Game {
             message.innerHTML = "Congratulations! You reached the destination.";
         }
 
-        document.getElementById("popup").appendChild(message);
+        popupEl.appendChild(message);
 
 
         const playAgain = document.createElement("button");
         playAgain.innerText = "Play Again";
-        document.getElementById("popup").appendChild(playAgain);
+        popupEl.appendChild(playAgain);
 
-        document.getElementById("popup").hidden = false;
+        popupEl.hidden = false;
 
         playAgain.addEventListener("click", () => {
-            document.getElementById("popup").hidden = true;
+            popupEl.hidden = true;
             message.remove();
             playAgain.remove();
             this.startGame();
@@ -217,8 +223,8 @@ class World  {
         this.worldPositionY = this.hero.positionY;
         this.battle = new Battle(hero, enemy);
         this.inBattle = true;
-        document.getElementById("world").hidden = true;
-        document.getElementById("battle").hidden = false;
+        worldEl.hidden = true;
+        battleEl.hidden = false;
         const heroDom = hero.createDomElement();
         hero.createHealthBar(heroDom);
         const enemyDom = enemy.createDomElement();
@@ -230,10 +236,10 @@ class World  {
         const message = document.createElement("p");
         message.innerHTML = "Enemy down! You win!"
 
-        document.getElementById("popup").appendChild(message)
-        document.getElementById("popup").hidden = false;
-        document.getElementById("world").hidden = false;
-        document.getElementById("battle").hidden = true;
+        popupEl.appendChild(message)
+        popupEl.hidden = false;
+        worldEl.hidden = false;
+        battleEl.hidden = true;
 
         enemy.domElement.remove();
         this.enemies.splice(this.enemies.indexOf(enemy), 1);
@@ -242,7 +248,7 @@ class World  {
 
         setTimeout(() => {
             message.remove();
-            document.getElementById("popup").hidden = true;
+            popupEl.hidden = true;
             this.hero.positionX = this.worldPositionX;
             this.hero.positionY = this.worldPositionY;
             this.inBattle = false;
@@ -258,10 +264,10 @@ class Battle {
     constructor(hero, enemy) {
         this.hero = hero;
         this.hero.scene = "battle"
-        this.hero.height = 25;
-        this.hero.width = 8;
+        this.hero.height = 40;
+        this.hero.width = 30;
         this.hero.positionX = 80 - this.hero.width;
-        this.hero.positionY = 0;
+        this.hero.positionY = 10;
 
         this.enemy = enemy;
         this.enemy.scene = "battle"
@@ -424,8 +430,8 @@ class Hero extends Character {
         const className = "hero";
         const scene = "world";
 
-        const height = 6;
-        const width = 4;
+        const height = 8;
+        const width = 6;
         const positionX = 2;
         const positionY = 100 - 3 - height;
 
