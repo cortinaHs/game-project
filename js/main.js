@@ -411,7 +411,7 @@ class Battle {
         const chance = Number(Math.random().toFixed(2));
         let hit = 0;
 
-        if(chance > 0.85) {
+        if(chance > 0.80) {
             hit = attacker.attack * 2;
         } else if(chance > 0.60) {
             hit = (Math.floor(attacker.attack * chance));
@@ -443,7 +443,7 @@ class Battle {
         const chance = Number(Math.random().toFixed(2));
         let hit = 0;
 
-        if(chance > 0.85) {
+        if(chance > 0.80) {
             hit = attacker.attack * 2;
         } else if(chance > 0.60) {
             hit = (Math.floor(attacker.attack * chance));
