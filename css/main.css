@@ -6,31 +6,40 @@ body {
     
 }
 
+.hp-value{
+    accent-color: crimson;
+}
+
+
+.hp {
+    padding: 1vh 1vw;
+    z-index: 1;
+    background-color: rgb(231, 218, 183);
+    border-radius: 0.4em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 #xp {
     position: fixed;
-    left: 5vw;
-    top: 4vh;
+    left: 23vw;
+    top: 2vh;
+    padding: 1vh 1vw;
     z-index: 1;
-    border-radius: 0.2em;
+    background-color: rgb(231, 218, 183);
+    border-radius: 0.4em;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .hero .hp {
     position: fixed;
-    left: 5vw;
+    left: 10vw;
     top: 2vh;
-    z-index: 1;
-    border-radius: 0.2em;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .enemy .hp {
     position: fixed;
-    left: 80vw;
+    left: 70vw;
     top: 2vh;
-    z-index: 1;
-    border-radius: 0.2em;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 
@@ -57,6 +66,7 @@ body {
     text-align: center;
 }
 
+
 #battle {
     position: relative;
     width: 100vw;
@@ -67,30 +77,47 @@ body {
     background-size: cover;
 }
 
+.fight-btn{
+    background-color: transparent;
+    border: 0;
+    border-radius: 0.2em;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: pointer;
+}
+
+
 #magic {
     position: absolute;
-    left: 95vw;
-    top: 20vh;
-    width: 60px;
-    text-align: center;
+    left: 10vw;
+    top: 15vh;
+}
+
+#magic img {
+    height: 7vh;
 }
 
 
 #attack {
     position: absolute;
-    left: 95vw;
-    top: 25vh;
+    left: 8vw;
+    top: 24vh;
     width: 60px;
-    text-align: center;
 }
 
-#block {
+#attack img {
+    height: 13vh;
+}
+
+#heal {
     background-image: url();
     position: absolute;
-    left: 95vw;
-    top: 30vh;
+    left: 9.5vw;
+    top: 38vh;
     width: 60px;
-    text-align: center;
+}
+
+#heal img {
+    height: 9vh;
 }
 
 
@@ -102,11 +129,9 @@ body {
 }
 
 .enemy {
-    /* background-image: url(../img/enemy-world.png); */
-    background-color: blueviolet;
+    background-image: url(../img/dragon.png);
     position: absolute;
-    /* background-repeat: no-repeat;
-    background-size: 5%; */
-    /* width: 2vw; */
+    background-repeat: no-repeat;
+    background-size: cover;
 
 }

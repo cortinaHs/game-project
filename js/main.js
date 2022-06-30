@@ -1,4 +1,5 @@
 
+// variables for DOM changes
 const worldEl = document.getElementById("world");
 const battleEl = document.getElementById("battle");
 const popupEl = document.getElementById("popup");
@@ -8,27 +9,24 @@ class Game {
     constructor () {
     this.hero = null;
     this.world = null;
-
-    //level
+    this.audio = null;
     }
 
 
-    welcomeScreen() {
-
+    welcome() {
+        //scene
         worldEl.hidden = false;
         battleEl.hidden = true;
 
+        //popup welcome 
+        popupEl.innerHTML = "<br><br>You are on an adventure to find a special flower. <br><br>Find the flower and win the game.<br><br>This requires a certain level of experience. Fill the bar before you reach the flower by winning fights against monsters along the way.<br><br><br>";
 
-        const message = document.createElement("p");
-        message.innerHTML = "<br>You are on an adventure to find a special flower. <br><br>Find the flower and win the game.<br><br>This requires a certain level of experience. Fill the bar before you reach the flower by winning fights against monsters along the way.<br><br><br>";
-
-        popupEl.appendChild(message);
-
-
+        //play button
         const play = document.createElement("button");
         play.innerText = "Play";
+        play.style.height = "3rem";
+        play.style.width = "4rem";
         popupEl.appendChild(play);
-
         popupEl.hidden = false;
 
         play.addEventListener("click", () => {
@@ -37,22 +35,27 @@ class Game {
             play.remove();
             this.startGame();
         });
-
-
-
     }
+
 
     startGame() {
         popupEl.hidden = true;
 
         this.hero = new Hero();
+
+        //initiate world
         this.world = new World(this.hero);
         this.world.startWorld();
+        this.audio = new Audio("../sounds/battleaudio.mp3");
+        this.audio.play();
+        this.audio.volume = 0.2;
+        this.audio.loop = true;
 
     }
 
-    gameEnd(status) {
-        worldEl.style.filter = "blur (8px)"
+
+    endGame(status) {
+        //scene
         worldEl.hidden = false;
         battleEl.hidden = true;
 
@@ -62,21 +65,21 @@ class Game {
         this.world.enemies.forEach(enemy => enemy.domElement.remove());
         this.hero = null;
         this.world = null;
+        this.audio.pause();
+        this.audio = null;
 
         //popup
-        const message = document.createElement("p");
-
         if(status === "gameOver") {
-            message.innerHTML = "Game Over";
+            popupEl.innerHTML = "<br><br><br>Game Over<br><br><br>";
         } else if(status === "winGame") {
-            message.innerHTML = "Congratulations! You reached the destination.";
+            popupEl.innerHTML = "<br><br><br>Congratulations! <br>You reached the destination.<br><br><br>";
         }
 
-        popupEl.appendChild(message);
-
-
+        //play again button
         const playAgain = document.createElement("button");
         playAgain.innerText = "Play Again";
+        play.style.height = "3rem";
+        play.style.width = "4rem";
         popupEl.appendChild(playAgain);
 
         popupEl.hidden = false;
@@ -108,6 +111,7 @@ class World  {
         this.enemyActions();
     }
 
+    //move player
     addEventListeners() {
         document.addEventListener("keydown", event => {
             if(this.inBattle){
@@ -130,6 +134,7 @@ class World  {
         })
     }
 
+    //game interval
     enemyActions() {
         this.intervalID = setInterval( () => {
             if(this.inBattle){
@@ -153,16 +158,12 @@ class World  {
         }, 10);
     }
 
-        
-
-    
-
+    //enemies
     createEnemies() {  
         if(this.enemies.length < 5){
             this.enemies.push(new Enemy());
         }
     }
-
 
     moveEnemy() {
         this.enemies.forEach(enemy => {
@@ -211,18 +212,25 @@ class World  {
         }));
     }
 
+    //win game
     reachDestination() {
         if(this.hero.positionX === 100 - this.hero.width && this.hero.positionY === 0 && this.hero.xp >= 1){
-            //trigger "Bossfight"?
-            game.gameEnd("winGame");
+            game.endGame("winGame");
         }
     }
 
+
+    //battle
     initiateBattle(hero, enemy) {
+        //save world position
         this.worldPositionX = this.hero.positionX;
         this.worldPositionY = this.hero.positionY;
+
+        //initiate battle
         this.battle = new Battle(hero, enemy);
         this.inBattle = true;
+
+        //scene
         worldEl.hidden = true;
         battleEl.hidden = false;
         const heroDom = hero.createDomElement();
@@ -233,19 +241,21 @@ class World  {
     }
 
     winBattle(enemy){
-        const message = document.createElement("p");
-        message.innerHTML = "Enemy down! You win!"
-
-        popupEl.appendChild(message)
+        popupEl.innerHTML = "<br><br><br>Enemy down! You win!"
         popupEl.hidden = false;
+
+        //scene
         worldEl.hidden = false;
         battleEl.hidden = true;
 
+        //remove enemy
         enemy.domElement.remove();
         this.enemies.splice(this.enemies.indexOf(enemy), 1);
         
+        //??????
         this.hero.healthBar = this.hero.createHealthBar(this.hero.domElement);
 
+        //continue in world setting
         setTimeout(() => {
             popupEl.innerHTML = "";
             popupEl.hidden = true;
@@ -266,72 +276,75 @@ class Battle {
         this.hero.scene = "battle"
         this.hero.height = 40;
         this.hero.width = 30;
-        this.hero.positionX = 10;
+        this.hero.positionX = 8;
         this.hero.positionY = 10;
 
         this.enemy = enemy;
         this.enemy.scene = "battle"
-        this.enemy.height = 30;
-        this.enemy.width = 10;
-        this.enemy.positionX = 90 - this.enemy.width;
-        this.enemy.positionY = 0;
-
-        // this.turn = "hero";
-
+        this.enemy.height = 40;
+        this.enemy.width = 37;
+        this.enemy.positionX = 95 - this.enemy.width;
+        this.enemy.positionY = 15;
     }
 
-    startBattle(hero, enemy) {
+    startBattle() {
         this.addEventListeners();
-        // document.querySelector('.hero').style.backgroundImage = "url(../img/hero-battler.png)";
-    
     }
 
+    //hero actions
     addEventListeners() {
         document.getElementById("attack").addEventListener('click', () => {
-                this.fight(this.hero, this.enemy);
+            this.fight(attack, this.hero, this.enemy);
         });
-        // document.getElementById("block").addEventListener('click', () => {
-        //     if(this.turn === "hero") {
-        //         this.defend(this.hero, this.enemy);
-        //         this.turn = "enemy";
-        //     }
-        // });
+
+        document.getElementById("heal").addEventListener('click', () => {
+            this.fight(heal, this.hero, this.enemy);
+        });
+
+        document.getElementById("magic").addEventListener('click', () => {
+            this.fight(magic, this.hero, this.enemy);
+        });
     }
 
-    fight(hero, enemy) {
-        
+    fight(action, hero, enemy) {
+        //hero attack
         if (hero.health > 0){
-            this.attack(hero, enemy);
+            switch(action){
+                case attack: 
+                    this.attack(hero, enemy);
+                    break;
+                case heal: 
+                    this.heal();
+                    break;
+                case magic: 
+                    this.magic(hero, enemy);
+                    break;
+            }
         }
-        
+
+        //enemy attack
         if (enemy.health > 0){
         this.attack(enemy, hero);
         }
 
-        // if(this.turn === "hero") {
-        // this.attack(hero, enemy);
-        // this.turn = "enemy";
-        // } else if (this.turn === "enemy") {
-        //     this.attack(enemy, hero);
-        //     this.turn = "hero";
-        // }
-
+        // win-loose battle
         if (hero.health <= 0) {
-            return game.gameEnd("gameOver");
+            setTimeout(() => {
+                game.endGame("gameOver");
+            }, 1000)
         } else if (enemy.health <= 0){
             hero.xp++;
             document.getElementById("xp-value").value = hero.xp;
-            return game.world.winBattle(enemy);
+            setTimeout(() => {
+                game.world.winBattle(enemy);
+            }, 1000)
         }
 
     }
 
     
     attack(attacker, opponent) {
-
-        //move animation
-
-        const chance = Number(Math.random().toFixed(2))
+        const chance = Number(Math.random().toFixed(2));
 
         if(chance > 0.85) {
             opponent.health -= attacker.attack * 2;
@@ -341,20 +354,31 @@ class Battle {
             opponent.health -= (Math.floor(attacker.attack * 0.6));
         }
 
-        console.log(opponent)
-        console.log(opponent.healthBar)
         opponent.healthBar.value = opponent.health;
     }
 
-    // defend() {
+//change attack! 
+    magic(attacker, opponent){
+        const chance = Number(Math.random().toFixed(2));
 
-    // }
+        if(chance > 0.85) {
+            opponent.health -= attacker.attack * 2;
+        } else if(chance > 0.60) {
+            opponent.health -= (Math.floor(attacker.attack * chance));
+        } else {
+            opponent.health -= (Math.floor(attacker.attack * 0.6));
+        }
 
+        opponent.healthBar.value = opponent.health;
+    }
 
+    heal() {
+        this.hero.health += 20;
+    }
 }
 
 class Character {
-    constructor (className, scene, height, width, positionX, positionY, health, attack, defence) {
+    constructor (className, scene, height, width, positionX, positionY, health, attack) {
         this.className = className;
         this.scene = scene;
 
@@ -366,7 +390,6 @@ class Character {
 
         this.health = health;
         this.attack = attack;
-        this.defence = defence;
 
         this.domElement = this.createDomElement();
         this.healthBar = this.createHealthBar(this.domElement);
@@ -375,16 +398,12 @@ class Character {
     createDomElement() {
         const newElement = document.createElement('div');
 
-        //set it and css
         newElement.className = this.className;
         newElement.style.height = this.height + "vh";
         newElement.style.width = this.width + "vw";
         newElement.style.left = this.positionX + "vw";
         newElement.style.bottom = this.positionY + "vh";
 
-        
-
-        // append to the dom
         document.getElementById(this.scene).appendChild(newElement);
 
         return newElement;
@@ -401,9 +420,7 @@ class Character {
         label.className = "hp";
         label.textContent = this.className;
 
-
         label.appendChild(healthBar);
-
         domElement.appendChild(label);
 
         this.healthBar = healthBar;
@@ -411,6 +428,7 @@ class Character {
         return healthBar;
     }
 
+    //character movement
     moveUp() {
         this.positionY++;
         this.domElement.style.bottom = this.positionY + "vh";
@@ -442,17 +460,13 @@ class Hero extends Character {
 
 
         const health = 100;
-        const attack = 50;
-        const defence = 10;
+        const attack = 30;
 
-        super(className, scene, height, width, positionX, positionY, health, attack, defence);
+        super(className, scene, height, width, positionX, positionY, health, attack);
 
         this.xp = 0;
-
         this.domElement.innerHTML += `<label id="xp">xp
         <progress id="xp-value" value="${this.xp}" max="1"></progress></label>`
-
-        // document.querySelector('.hero').style.backgroundImage = "url(../img/hero-world.png)";
     }
         
 
@@ -462,31 +476,33 @@ class Hero extends Character {
 
 
 class Enemy extends Character {
-    constructor(/*positionX, positionY, level*/) {
+    constructor() {
         const className = "enemy";
         const scene = "world";
         
         const height = 10;
-        const width = 2;
+        const width = 9;
         const positionX = Math.floor(Math.random() * (100 - width) + 1);
         const positionY = Math.floor(Math.random() * (100 - height) + 1);
 
 
         const health = 100;
-        const attack = 5;
-        const defence = 20;
+        const attack = 10;
 
-        super(className, scene, height, width, positionX, positionY, health, attack, defence);
+        super(className, scene, height, width, positionX, positionY, health, attack);
     
-        this.level = 1;
+        this.healthBar.hidden = true;
     }
 
 }
 
 // class Ally extends Character {}
-// class BossEnemy extends Character {}
+// class BossEnemy extends Enemy {}
 
 
 
+
+
+//start game
 const game = new Game();
-game.welcomeScreen();
+game.welcome();
