@@ -425,15 +425,20 @@ class Battle {
         opponent.createHealthBar();
 
         let hitValue = document.createElement("p");
-        hitValue.innerHTML = hit;
-        hitValue.id = "hit"
+        hitValue.id = "hit";
+
+        if(chance > 0.85) {
+            hitValue.innerHTML = "critical!";
+        } else {
+            hitValue.innerHTML = hit;
+        }
        
         opponent.domElement.appendChild(hitValue);
 
         setTimeout(() => hitValue.remove(), 500)
     }
 
-//change attack! 
+// TODO: change attack
     magic(attacker, opponent){
         const chance = Number(Math.random().toFixed(2));
         let hit = 0;
@@ -450,8 +455,13 @@ class Battle {
         opponent.healthBar.value = opponent.health;
 
         let hitValue = document.createElement("p");
-        hitValue.innerHTML = hit;
-        hitValue.id = "hit"
+        hitValue.id = "hit";
+
+        if(chance > 0.85) {
+            hitValue.innerHTML = "critical!";
+        } else {
+            hitValue.innerHTML = hit;
+        }
        
         opponent.domElement.appendChild(hitValue);
 
