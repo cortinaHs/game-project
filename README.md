@@ -26,27 +26,27 @@ Play here: https://cortinahs.github.io/game-project/
 
 - Potion icon: potion icons (free-game-assets.itch.io)
 
--music: songs from 'Infinity Crital: Awakening' by Sara Garrard (sonatina.itch.io)
+- music: songs from 'Infinity Crital: Awakening' by Sara Garrard (sonatina.itch.io)
 
 
 
 # Further Improvements and Ideas
 
-[]  Attacks after each other
-[]  Music fix and new more different sounds
-[]  Enemies can't spawn in hero's current position
-[]  Attack animations
-[]  Restricted areas
-[]  Improve objective/ destination
-[]  Add levels
-[]  Different enemy classes
-[]  More worlds or scrollable world
-[]  Run option in battle
-[]  Multiple enemies in one battle, choose target functionality
-[]  Charm action, enemy becomes ally, ally buffs or engage in fight
-[]  Move on click
-[]  Attack combination effects
-[]  Choose your character
-[]  Items
-[]  Boss fight
+- [ ]  Attacks after each other
+- [ ]  Music fix and new more different sounds
+- [ ]  Enemies can't spawn in hero's current position
+- [ ]  Attack animations
+- [ ]  Restricted areas
+- [ ]  Improve objective/ destination
+- [ ]  Add levels
+- [ ]  Different enemy classes
+- [ ]  More worlds or scrollable world
+- [ ]  Run option in battle
+- [ ]  Multiple enemies in one battle, choose target functionality
+- [ ]  Charm action, enemy becomes ally, ally buffs or engage in fight
+- [ ]  Move on click
+- [ ]  Attack combination effects
+- [ ]  Choose your character
+- [ ]  Items
+- [ ]  Boss fight
 
